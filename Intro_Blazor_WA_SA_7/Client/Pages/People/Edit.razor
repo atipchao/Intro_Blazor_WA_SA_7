@@ -1,0 +1,26 @@
+﻿@page "/people/edit/{personId:int}"
+@inject HttpClient http
+@inject NavigationManager nav
+<h3>Edit</h3>
+
+<PersonForm ButtonText="Update Person" Person="_person"
+            OnvalidSubmit="@EditPerson" />
+
+
+@code {
+
+    [Parameter] public int personId { get; set; }
+    Person _person = new Person();
+
+    protected async override Task OnParametersSetAsync()
+    {
+        // retrive person from the Database 
+        _person = await http.GetFromJsonAsync<Person>($"api/people/{personId}");
+        
+    }
+    async Task EditPerson()
+    {
+        await http.PutAsJsonAsync("api/people", _person);
+        nav.NavigateTo("people");
+    }
+}

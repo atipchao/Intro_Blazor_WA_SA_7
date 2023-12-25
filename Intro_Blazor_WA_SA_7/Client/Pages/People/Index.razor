@@ -1,5 +1,7 @@
 ﻿@page "/people"
 @inject HttpClient http
+@inject IJSRuntime js
+
 
 <h3>People</h3>
 
@@ -29,8 +31,8 @@ else
             {
                 <tr>
                     <td>
-                        <a class="btn btn-success">Edit</a>
-                        <button class="btn btn-danger">Delete</button>
+                        <a class="btn btn-success" href="people/edit/@person.Id">Edit</a>
+                        <button class="btn btn-danger" @onclick="(() => DeletePerson(person.Id))" >Delete</button>
                     </td>
                     <td>@person.Id</td>
                     <td>@person.Name</td>
@@ -54,10 +56,16 @@ else
     async Task LoadPeople()
     {
         people = await http.GetFromJsonAsync<Person[]>("api/people");
-        // people = new Person[]
-        // {
-        //     new Person(){Id=1, Name="John"},
-        //     new Person(){Id=2, Name="Jane"}
-        // };
+    }
+
+    async Task DeletePerson(int personId)
+    {
+        var selectedPerson = people.First(s => s.Id == personId);
+        if (await js.InvokeAsync<bool>("confirm", $"Do you want to delete this..{selectedPerson.Name} ?"))
+        {
+            await http.DeleteAsync($"api/people/{personId}");
+            await LoadPeople();
+        }
+        
     }
 }

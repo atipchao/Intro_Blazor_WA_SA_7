@@ -3,21 +3,9 @@
 @inject NavigationManager nav
 <h3>Create</h3>
 
-<EditForm Model="@_person" OnValidSubmit="@CreatePerson">
-    <DataAnnotationsValidator />
-    <div class="form-field">
-        <label>Name:</label>
-        <div>
-            <InputText @bind-Value="@_person.Name" />
-            <ValidationMessage For="@(() => _person.Name)" />
-        </div>
-    </div>
+<PersonForm ButtonText="Create Person" Person="_person"
+            OnvalidSubmit="@CreatePerson" />
 
-    <button type="submit" class="btn btn-success" >
-        Create Person
-    </button>
-
-</EditForm>
 @code {
     Person _person = new Person();
     async Task CreatePerson()
