@@ -1,3 +1,7 @@
+using Intro_Blazor_WA_SA_7.Server.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
+
 using Microsoft.AspNetCore.ResponseCompression;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,12 +11,23 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+//Config DB connection
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer("name=DefaultConnection"));
+//builder.Services.AddAutoMapper(typeof(Program));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.UseSwagger();
+    app.UseSwaggerUI();
     app.UseWebAssemblyDebugging();
+
 }
 else
 {

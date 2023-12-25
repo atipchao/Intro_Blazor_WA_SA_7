@@ -1,0 +1,63 @@
+﻿@page "/people"
+@inject HttpClient http
+
+<h3>People</h3>
+
+<a class="btn btn-success" href="people/create">New Person</a>
+
+
+@if(people == null)
+{
+    <text>Loading...</text>
+}
+else if(people.Length == 0)
+{
+    <text>No People Found!</text>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Id</th>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var person in people)
+            {
+                <tr>
+                    <td>
+                        <a class="btn btn-success">Edit</a>
+                        <button class="btn btn-danger">Delete</button>
+                    </td>
+                    <td>@person.Id</td>
+                    <td>@person.Name</td>
+                </tr>
+            }
+
+        </tbody>
+        
+    </table>
+}
+
+
+@code {
+    Person[] people { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadPeople();
+    }
+
+    async Task LoadPeople()
+    {
+        people = await http.GetFromJsonAsync<Person[]>("api/people");
+        // people = new Person[]
+        // {
+        //     new Person(){Id=1, Name="John"},
+        //     new Person(){Id=2, Name="Jane"}
+        // };
+    }
+}
